@@ -1,0 +1,12 @@
+include ./header.jade
+
+.container
+  .page-header
+    h1 Browse Corrals
+
+  ul
+    each corral in corrals
+      li 
+        a(href=corral.href) Corral ##{corral.id}
+
+include ./footer.jade

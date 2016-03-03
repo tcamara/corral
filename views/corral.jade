@@ -1,0 +1,32 @@
+include ./header.jade
+
+.container
+  .page-header
+    h1 View/Edit Corral
+
+  form(action='/#{id}/update' method='post')
+    label(for='html') HTML
+    br
+    textarea(name='html' class='editor html-editor')
+      | !{html}
+    br
+
+    label(for='css') CSS
+    br
+    textarea(name='css' class='editor css-editor')
+      | !{css}
+    br
+
+    label(for='js') JS
+    br
+    textarea(name='js' class='editor js-editor')
+      | !{js}
+    br
+    input(type='submit' class='btn btn-primary' value='Update')
+  
+  br
+
+  form(action='/#{id}/delete' method='post')
+    input(type='submit' class='btn btn-danger' value='delete')
+
+include ./footer.jade

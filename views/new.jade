@@ -1,0 +1,22 @@
+include ./header.jade
+
+.container
+  .page-header
+    h1 Create New Corral
+
+  form(action='/create' method='post')
+    label(for='html') HTML
+    br
+    textarea(name='html' class='editor html-editor')
+    br
+    label(for='css') CSS
+    br
+    textarea(name='css' class='editor css-editor')
+    br
+    label(for='js') JS
+    br
+    textarea(name='js' class='editor js-editor')
+    br
+    input(type='submit' class='btn btn-primary' value='Create')
+
+include ./footer.jade

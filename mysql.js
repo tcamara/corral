@@ -1,8 +1,8 @@
 const mysql = require('mysql');
 const dev_config = {
 	host: 'localhost',
-	database: 'blog',
-	user: 'blog_user',
+	database: 'corral',
+	user: 'corral_user',
 	password: 'bad_password',
 	connectionLimit: 100,
 };
@@ -17,7 +17,7 @@ function get(query, values, callback, error_callback) {
         else {
         	connection.query(query, values, function(error, results, fields) {
         		if(error) {
-        			error_callback(error);
+                    error_callback(error);
         		}
         		else {
         			callback(results, fields);
