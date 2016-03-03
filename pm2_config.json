@@ -1,0 +1,8 @@
+{
+  "apps" : [{
+    "name"        : "corral",
+    "script"      : "./server.js",
+    "watch"       : false,
+    "exec_mode"        : "fork",
+  }]
+}
