@@ -39,7 +39,9 @@ app.get('/browse', (req, res, next) => {
 
 // Start New Corral
 app.get('/new', (req, res, next) => {
-	res.render('new');
+	res.render('new', {
+		codemirror: true,
+	});
 });
 
 // Create New Corral
@@ -65,6 +67,7 @@ app.get('/:id', (req, res, next) => {
 				css: results[0].css,
 				html: results[0].html,
 				js: results[0].js,
+				codemirror: true,
 			});
 		}
 		else {
@@ -101,9 +104,9 @@ app.post('/:id/update', (req, res, next) => {
 	const { html, css, js } = req.body;
 	const values = [ html, css, js, id ];
 
-	mysql('UPDATE `Content` SET `html` = ?, `css` = ?, `js` = ? WHERE `id` = ?', values, (results, fields) => {
-		// res.status(200).send({ success: true });
-		res.redirect(`/${id}`);
+	mysql('UPDATE `Content` SET `version` = `version` + 1, `html` = ?, `css` = ?, `js` = ? WHERE `id` = ?', values, (results, fields) => {
+		res.status(200).send({ success: true });
+		// res.redirect(`/${id}`);
 	}, (error) => {
 		return next(error);
 	});

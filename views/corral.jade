@@ -4,6 +4,8 @@ include ./header.jade
   .page-header
     h1 View/Edit Corral
 
+  iframe(src='/#{id}/preview' name='preview_window' sandbox='allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-modals allow-forms' allowfullscreen='true')
+
   form(action='/#{id}/update' method='post')
     label(for='html') HTML
     br
