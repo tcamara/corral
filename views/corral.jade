@@ -2,33 +2,37 @@ include ./header.jade
 
 .container
   .page-header
-    h1 View/Edit Corral
+    h1 #{name}
 
-  iframe(src='/#{id}/preview' name='preview_window' sandbox='allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-modals allow-forms' allowfullscreen='true')
+    form(action='/#{id}/update' method='post')
+      .corral
+        .corral-item
+          label(for='html') HTML
+          textarea(name='html' class='editor html-editor')
+            | !{html}
 
-  form(action='/#{id}/update' method='post')
-    label(for='html') HTML
-    br
-    textarea(name='html' class='editor html-editor')
-      | !{html}
-    br
+        .corral-item
+          label(for='css') CSS
+          textarea(name='css' class='editor css-editor')
+            | !{css}
 
-    label(for='css') CSS
-    br
-    textarea(name='css' class='editor css-editor')
-      | !{css}
-    br
+        .corral-item
+          label(for='js') JS
+          textarea(name='js' class='editor js-editor')
+            | !{js}
 
-    label(for='js') JS
-    br
-    textarea(name='js' class='editor js-editor')
-      | !{js}
-    br
-    input(type='submit' class='btn btn-primary' value='Update')
-  
-  br
+      iframe(
+        src='/#{id}/preview' 
+        name='preview_window' 
+        sandbox='allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-modals allow-forms' 
+        allowfullscreen='true'
+      )
+
+      br
+      br
+      input(type='submit' class='btn btn-primary' value='Update')
 
   form(action='/#{id}/delete' method='post')
-    input(type='submit' class='btn btn-danger' value='delete')
+    input(type='submit' class='btn btn-danger' value='Delete')
 
 include ./footer.jade

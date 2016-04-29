@@ -26,6 +26,7 @@ app.get('/browse', (req, res, next) => {
 			corrals.push({
 				id: results[i].id,
 				href: '/' + results[i].id,
+				name: (results[i].name) ? results[i].name : 'Corral #' + results[i].id
 			});
 		}
 		
@@ -46,10 +47,10 @@ app.get('/new', (req, res, next) => {
 
 // Create New Corral
 app.post('/create', (req, res, next) => {
-	const { html, css, js } = req.body;
-	const values = [ html, css, js];
+	const { name, html, css, js } = req.body;
+	const values = [ name, html, css, js];
 
-	mysql('INSERT INTO `Content` (`html`, `css`, `js`) VALUES (?, ?, ?)', values, (results, fields) => {
+	mysql('INSERT INTO `Content` (`name`, `html`, `css`, `js`) VALUES (?, ?, ?, ?)', values, (results, fields) => {
 		res.redirect(`/${results.insertId}`);
 	}, (error) => {
 		return next(error);
@@ -64,6 +65,7 @@ app.get('/:id', (req, res, next) => {
 		if(results.length) {
 			res.render('corral', { 
 				id: id,
+				name: (results[0].name) ? results[0].name : 'Corral #' + results[0].id,
 				css: results[0].css,
 				html: results[0].html,
 				js: results[0].js,
@@ -101,10 +103,10 @@ app.get('/:id/preview', (req, res, next) => {
 // Update Corral
 app.post('/:id/update', (req, res, next) => {
 	const id = req.params.id;
-	const { html, css, js } = req.body;
-	const values = [ html, css, js, id ];
+	const { name, html, css, js } = req.body;
+	const values = [ name, html, css, js, id ];
 
-	mysql('UPDATE `Content` SET `version` = `version` + 1, `html` = ?, `css` = ?, `js` = ? WHERE `id` = ?', values, (results, fields) => {
+	mysql('UPDATE `Content` SET `version` = `version` + 1, `name` = ?, `html` = ?, `css` = ?, `js` = ? WHERE `id` = ?', values, (results, fields) => {
 		res.status(200).send({ success: true });
 		// res.redirect(`/${id}`);
 	}, (error) => {

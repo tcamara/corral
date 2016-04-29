@@ -30,7 +30,7 @@ editors.forEach((item) => {
 	});
 
 	// Make it resizable
-	setResizable(codemirror);
+	// setResizable(codemirror);
 });
 
 // Handle fullscreen toggling on F11 when the codemirror has focus

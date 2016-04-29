@@ -5,6 +5,11 @@ include ./header.jade
     h1 Create New Corral
 
   form(action='/create' method='post')
+    label(for='name') Name
+    br
+    input(type='text' name='name')
+    br
+    br
     label(for='html') HTML
     br
     textarea(name='html' class='editor html-editor')
