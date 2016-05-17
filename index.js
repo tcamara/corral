@@ -2,9 +2,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('./mysql.js');
+const socketIo = require('socket.io');
 
 // Init ExpressJS
 const app = express();
+
+// Fire up ExpressJS server
+const server = app.listen(3000, () => {
+	console.log('Listening on port 3000');
+});
+
+// Set up socket server
+const io = socketIo(server);
 
 // Set up Jade as the view engine
 app.set('views', './views');
@@ -108,7 +117,7 @@ app.post('/:id/update', (req, res, next) => {
 
 	mysql('UPDATE `Content` SET `version` = `version` + 1, `name` = ?, `html` = ?, `css` = ?, `js` = ? WHERE `id` = ?', values, (results, fields) => {
 		res.status(200).send({ success: true });
-		// res.redirect(`/${id}`);
+		io.emit('corral update', 'test');
 	}, (error) => {
 		return next(error);
 	});
@@ -140,9 +149,3 @@ app.use(function(err, req, res, next) {
 	console.log(err);
 	res.status(500).send(err.message);
 });
-
-// Fire up server
-app.listen(3000, () => {
-	console.log('Listening on port 3000');
-});
-

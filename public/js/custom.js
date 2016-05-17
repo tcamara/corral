@@ -1,3 +1,8 @@
+///////////////
+// Variables //
+///////////////
+
+// Configuration settings for the three editors we're working with
 const editors = [
 	{
 		selector: '.html-editor',
@@ -13,57 +18,92 @@ const editors = [
 	},
 ];
 
+// Number of milliseconds to delay between when the user finishes 
+// typing and when we submit the change to the server
+const updateDelayMilliseconds = 2000;
+
+
+//////////////////
+// Socket Stuff //
+//////////////////
+
+// Set up the client-side socket connection
+const socket = io();
+
+// Register the sole socket event listener
+socket.on('corral update', function(test) {
+	// Hacky way to refresh the iframe
+	$('.corral-preview')[0].src = $('.corral-preview')[0].src;
+})
+
+
+/////////////
+// Editors //
+/////////////
+
 editors.forEach((item) => {
-	// Create it
+	// Create this editor
 	let codemirror = CodeMirror.fromTextArea($(item.selector)[0], {
 		mode: item.mode,
 		lineNumbers: true,
 		theme: 'base16-dark',
 		extraKeys: {
-			"F11": function(cm) {
-				handleF11(cm);
+			"F11": function(editor) {
+				handleF11(editor);
 			},
-			"Esc": function(cm) {
-				handleEsc(cm);
+			"Esc": function(editor) {
+				handleEsc(editor);
 			}
 		}
 	});
 
-	// Make it resizable
-	// setResizable(codemirror);
+	updateOnChange(codemirror);
 });
 
-// Handle fullscreen toggling on F11 when the codemirror has focus
-// This is only complicated because it doesn't play nice with jQuery UI's resizable widget
-function handleF11(cm) {
-	var $wrapper = $(cm.getWrapperElement());
-	var isFullScreen = cm.getOption("fullScreen");
-
-	if(!isFullScreen) {
-		$wrapper.resizable('disable').removeClass('ui-resizable');
-	}
-	else {
-		$wrapper.addClass('ui-resizable').resizable('enable');
-	}
-
-	cm.setOption("fullScreen", !isFullScreen);
+// Handle fullscreen toggling on F11 when the codemirror editor has focus
+function handleF11(editor) {
+	editor.setOption("fullScreen", !editor.getOption("fullScreen"));
 }
 
-// Handle toggling fullscreen off when hitting escape when the codemirror has focus
-// This is only complicated because it doesn't play nice with jQuery UI's resizable widget
-function handleEsc(cm) {
-	if (cm.getOption("fullScreen")) {
-		$(cm.getWrapperElement()).addClass('ui-resizable').resizable('enable');
-		cm.setOption("fullScreen", false);
+// Handle toggling fullscreen off when hitting escape when the codemirror editor has focus
+function handleEsc(editor) {
+	if (editor.getOption("fullScreen")) {
+		editor.setOption("fullScreen", false);
 	}
 }
 
-// Add jQuery UI's resizable widget to the given codemirror
-function setResizable(cm) {
-	var $wrapper = $(cm.getWrapperElement());
-	$wrapper.resizable({
-		resize: function() {
-			cm.setSize($(this).width(), $(this).height());
-		}
+// On a change event triggered by the codemirror editor, trigger an update
+function updateOnChange(editor) {
+	// Set up change handler var for this editor
+	let changeTimeout;
+
+	// On change:
+	editor.on('change', function() {
+		// Clear any previous timeouts
+		window.clearTimeout(changeTimeout);
+		
+		// Set a new timeout for the value of updateDelayMilliseconds
+		changeTimeout = window.setTimeout(function() {
+			// Save the latest value back to the text editor, so the form will serialize the right value
+			editor.save();
+			
+			// Trigger the update AJAX request
+			submitUpdate();
+		}, updateDelayMilliseconds);
+	})
+}
+
+// Submits the updated form values (serialized) to the server as an AJAX call
+function submitUpdate() {
+	const corralForm = $('.corral-form');
+
+	$.post(corralForm.attr('action'), corralForm.serialize(), function() {
+		//console.log('successfully updated');
+	}).done(function() {
+		//console.log('done firing');
+	}).fail(function() {
+		console.log('update failed');
+	}).always(function() {
+		//console.log('always firing');
 	});
 }
