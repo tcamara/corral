@@ -2,10 +2,10 @@ include ./header.jade
 
 .container
   .page-header
-    h1 #{name}
-
     form(action='/#{id}/delete' method='post')
-      input(type='submit' class='btn btn-danger' value='Delete')
+      input(type='submit' class='btn btn-danger btn-delete' value='Delete')
+
+    h1 #{name}
 
     form(action='/#{id}/update' method='post' class='corral-form')
       .corral

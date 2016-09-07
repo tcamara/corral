@@ -10,17 +10,20 @@ include ./header.jade
     input(type='text' name='name')
     br
     br
-    label(for='html') HTML
-    br
-    textarea(name='html' class='editor html-editor')
-    br
-    label(for='css') CSS
-    br
-    textarea(name='css' class='editor css-editor')
-    br
-    label(for='js') JS
-    br
-    textarea(name='js' class='editor js-editor')
+    
+    .corral
+      .corral-item
+        label(for='html') HTML
+        textarea(name='html' class='editor html-editor')
+
+      .corral-item
+        label(for='css') CSS
+        textarea(name='css' class='editor css-editor')
+           
+      .corral-item
+        label(for='js') JS
+        textarea(name='js' class='editor js-editor')
+
     br
     input(type='submit' class='btn btn-primary' value='Create')
 

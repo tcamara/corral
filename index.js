@@ -115,7 +115,7 @@ app.post('/:id/update', (req, res, next) => {
 	const { name, html, css, js } = req.body;
 	const values = [ name, html, css, js, id ];
 
-	mysql('UPDATE `Content` SET `version` = `version` + 1, `name` = ?, `html` = ?, `css` = ?, `js` = ? WHERE `id` = ?', values, (results, fields) => {
+	mysql('UPDATE `Content` SET `name` = ?, `html` = ?, `css` = ?, `js` = ? WHERE `id` = ?', values, (results, fields) => {
 		res.status(200).send({ success: true });
 		io.emit('corral update', 'test');
 	}, (error) => {

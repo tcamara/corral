@@ -22,3 +22,7 @@ iframe {
 	height: 250px;
 	border: 1px solid black;
 }
+
+.btn-delete {
+	float: right;
+}
