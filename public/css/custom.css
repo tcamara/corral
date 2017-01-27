@@ -1,3 +1,33 @@
+html {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	line-height: 1;
+	height: 100%;
+	background-color: #151515;
+	background-image: url('./../images/cartographer.png');
+	background-repeat: repeat;
+}
+
+.create-button a, .create-button a:hover {
+	color: white;
+	text-decoration: none;
+}
+
+.navbar {
+	border-radius: 0px;
+}
+
+.navbar-inverse .navbar-brand {
+	color: #dddddd;
+}
+
+h1 {
+	color: #dddddd;
+}
+
 .corral {
 	display: flex;
 	flex-direction: row;
@@ -11,8 +41,12 @@
 	margin: 5px;
 }
 
-.corral-item label {
+.corral-item {
 	display: block;
+}
+
+label {
+	color: #dddddd;
 }
 
 iframe {
@@ -20,9 +54,58 @@ iframe {
 	padding: 0px;
 	width: 100%;
 	height: 250px;
+	display: block;
+}
+
+.iframe-holder {
+	background-color: white;
+}
+
+.iframe-overlay {
+	background-color: #151515;
+	opacity: .8;
+	width: 100%;
+	height: 250px;
+	position: absolute;
+}
+
+iframe.detail {
 	border: 1px solid black;
 }
 
-.btn-delete {
+.btn-right {
 	float: right;
+}
+
+input, textarea {
+	background-color: #151515;
+	color: #dddddd;
+	border: 0;
+	padding: 3px;
+}
+
+.grid-container {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	margin: 0 -5px 5px -5px;
+}
+
+.grid-item {
+	flex: 1 1 auto;
+	width: 30%;
+	margin: 5px;
+	position: relative;
+}
+
+a.grid-name, a.grid-name:active, a.grid-name:hover a.grid-name:visited {
+	display: block;
+	position: absolute;
+	color: #dddddd;
+	font-size: 1.5em;
+	bottom: 20px;
+	width: 70%;
+	padding-top: 5px;
+	margin: 0 10px;
+	border-top: 2px solid white;
 }

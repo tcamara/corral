@@ -1,11 +1,12 @@
-include ./header.jade
+extends layout.jade
 
-.container
-  .page-header
-    form(action='/#{id}/delete' method='post')
-      input(type='submit' class='btn btn-danger btn-delete' value='Delete')
+block content
+  .container
+    .page-header
+      form(action='/#{id}/delete' method='post')
+        input(type='submit' class='btn btn-danger btn-right' value='Delete')
 
-    h1 #{name}
+      h1 #{name}
 
     form(action='/#{id}/update' method='post' class='corral-form')
       .corral
@@ -24,12 +25,13 @@ include ./header.jade
           textarea(name='js' class='editor js-editor')
             | !{js}
 
-      iframe(
-        src='/#{id}/preview' 
-        name='preview_window'
-        class='corral-preview'
-        sandbox='allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-modals allow-forms' 
-        allowfullscreen='true'
-      )
-
-include ./footer.jade
+      .iframe-holder
+        iframe.detail(
+          id='corral-#{id}'
+          src='/#{id}/preview' 
+          name='preview_window'
+          class='corral-preview'
+          sandbox='allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-modals allow-forms' 
+          allowfullscreen='true'
+          allowtransparency='true'
+        )

@@ -22,13 +22,8 @@ app.set('view engine', 'jade');
 // parse application/json
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Homepage
-app.get('/', (req, res, next) => {
-	res.render('index');
-});
-
 // View/Modify Existing Corral
-app.get('/browse', (req, res, next) => {
+app.get('/', (req, res, next) => {
 	mysql('SELECT * FROM `Content`', [], (results, fields) => {
 		const corrals = [];
 		for(var i = 0; i < results.length; i++) {
@@ -57,9 +52,10 @@ app.get('/new', (req, res, next) => {
 // Create New Corral
 app.post('/create', (req, res, next) => {
 	const { name, html, css, js } = req.body;
+	const ip_address = req.ip;
 	const values = [ name, html, css, js];
 
-	mysql('INSERT INTO `Content` (`name`, `html`, `css`, `js`) VALUES (?, ?, ?, ?)', values, (results, fields) => {
+	mysql('INSERT INTO `Content` (`name`, `ip_address`, `html`, `css`, `js`) VALUES (?, ?, ?, ?, ?)', values, (results, fields) => {
 		res.redirect(`/${results.insertId}`);
 	}, (error) => {
 		return next(error);
@@ -67,6 +63,7 @@ app.post('/create', (req, res, next) => {
 });
 
 // View/Modify Existing Corral
+// TODO: check for matching IP to display delete button
 app.get('/:id', (req, res, next) => {
 	const id = req.params.id;
 
@@ -112,10 +109,10 @@ app.get('/:id/preview', (req, res, next) => {
 // Update Corral
 app.post('/:id/update', (req, res, next) => {
 	const id = req.params.id;
-	const { name, html, css, js } = req.body;
-	const values = [ name, html, css, js, id ];
+	const { html, css, js } = req.body;
+	const values = [ html, css, js, id ];
 
-	mysql('UPDATE `Content` SET `name` = ?, `html` = ?, `css` = ?, `js` = ? WHERE `id` = ?', values, (results, fields) => {
+	mysql('UPDATE `Content` SET `html` = ?, `css` = ?, `js` = ? WHERE `id` = ?', values, (results, fields) => {
 		res.status(200).send({ success: true });
 		io.emit('corral update', 'test');
 	}, (error) => {
@@ -124,6 +121,7 @@ app.post('/:id/update', (req, res, next) => {
 });
 
 // Delete Corral
+// TODO: check for matching IP address
 app.post('/:id/delete', (req, res, next) => {
 	const id = req.params.id;
 

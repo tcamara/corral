@@ -1,30 +1,28 @@
-include ./header.jade
+extends layout.jade
 
-.container
-  .page-header
-    h1 Create New Corral
+block content
+  .container
+    form(action='/create' method='post')
+      .page-header
+        input(type='submit' class='btn btn-primary btn-right' value='Save')
 
-  form(action='/create' method='post')
-    label(for='name') Name
-    br
-    input(type='text' name='name')
-    br
-    br
-    
-    .corral
-      .corral-item
-        label(for='html') HTML
-        textarea(name='html' class='editor html-editor')
+        h1 Create New Corral
 
-      .corral-item
-        label(for='css') CSS
-        textarea(name='css' class='editor css-editor')
-           
-      .corral-item
-        label(for='js') JS
-        textarea(name='js' class='editor js-editor')
+      label(for='name') Name
+      br
+      input(type='text' name='name')
+      br
+      br
+      
+      .corral
+        .corral-item
+          label(for='html') HTML
+          textarea(name='html' class='editor html-editor')
 
-    br
-    input(type='submit' class='btn btn-primary' value='Create')
-
-include ./footer.jade
+        .corral-item
+          label(for='css') CSS
+          textarea(name='css' class='editor css-editor')
+             
+        .corral-item
+          label(for='js') JS
+          textarea(name='js' class='editor js-editor')

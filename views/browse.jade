@@ -1,12 +1,23 @@
-include ./header.jade
+extends layout.jade
 
-.container
-  .page-header
-    h1 Browse Corrals
+block content
+  .container
+    .page-header
+      h1 Existing Corrals
 
-  ul
-    each corral in corrals
-      li 
-        a(href=corral.href) #{corral.name}
-
-include ./footer.jade
+    div.grid-container
+      each corral in corrals
+        div.grid-item 
+          .iframe-overlay
+          .iframe-holder
+            iframe(
+              src='/#{corral.id}/preview' 
+              name='preview_window_#{corral.id}'
+              class='corral-preview-grid'
+              sandbox='allow-scripts allow-pointer-lock allow-same-origin' 
+              allowfullscreen='false'
+              frameborder='0'
+              scrolling='no'
+              allowtransparency='false'
+            )
+          a(href=corral.href class='grid-name') #{corral.name}
