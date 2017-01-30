@@ -63,12 +63,13 @@ app.post('/create', (req, res, next) => {
 });
 
 // View/Modify Existing Corral
-// TODO: check for matching IP to display delete button
 app.get('/:id', (req, res, next) => {
 	const id = req.params.id;
 
 	mysql('SELECT * FROM `Content` WHERE `id` = ?', [ id ], (results, fields) => {
 		if(results.length) {
+			const canEdit = results[0].ip_address == req.ip ? true : false;
+
 			res.render('corral', { 
 				id: id,
 				name: (results[0].name) ? results[0].name : 'Corral #' + results[0].id,
@@ -76,6 +77,7 @@ app.get('/:id', (req, res, next) => {
 				html: results[0].html,
 				js: results[0].js,
 				codemirror: true,
+				canEdit,
 			});
 		}
 		else {
@@ -121,15 +123,16 @@ app.post('/:id/update', (req, res, next) => {
 });
 
 // Delete Corral
-// TODO: check for matching IP address
 app.post('/:id/delete', (req, res, next) => {
 	const id = req.params.id;
 
-	mysql('DELETE FROM `Content` WHERE `id` = ?', [ id ], (results, fields) => {
-		res.redirect('/');
-	}, (error) => {
-		return next(error);
-	});
+	if(canDelete) {
+		mysql('DELETE FROM `Content` WHERE `id` = ? AND ip_address = ?', [ id, req.ip ], (results, fields) => {
+			res.redirect('/');
+		}, (error) => {
+			return next(error);
+		});
+	}
 });
 
 // Static Content

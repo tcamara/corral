@@ -42,11 +42,17 @@ socket.on('corral update', function(test) {
 /////////////
 
 editors.forEach((item) => {
+	const $domItem = $(item.selector).first();
+
+	// Check if this editor should be read only
+	const readOnly = $domItem.hasClass('read-only');
+
 	// Create this editor
-	let codemirror = CodeMirror.fromTextArea($(item.selector)[0], {
+	let codemirror = CodeMirror.fromTextArea($domItem[0], {
 		mode: item.mode,
 		lineNumbers: true,
 		theme: 'base16-dark',
+		readOnly,
 		extraKeys: {
 			"F11": function(editor) {
 				handleF11(editor);

@@ -28,20 +28,21 @@ h1 {
 	color: #dddddd;
 }
 
-.corral {
+.corral, .grid-container {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 	margin: 0 -5px 5px -5px;
 }
 
-.corral-item {
-	flex: 1;
+.corral-item, .grid-item {
 	width: 30%;
+	min-width: 200px;
+	max-width: 400px;
+	flex-basis: auto;
+	flex-grow: 1;
 	margin: 5px;
-}
-
-.corral-item {
+	position: relative;
 	display: block;
 }
 
@@ -82,20 +83,6 @@ input, textarea {
 	color: #dddddd;
 	border: 0;
 	padding: 3px;
-}
-
-.grid-container {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	margin: 0 -5px 5px -5px;
-}
-
-.grid-item {
-	flex: 1 1 auto;
-	width: 30%;
-	margin: 5px;
-	position: relative;
 }
 
 a.grid-name, a.grid-name:active, a.grid-name:hover a.grid-name:visited {

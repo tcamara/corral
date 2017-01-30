@@ -3,35 +3,64 @@ extends layout.jade
 block content
   .container
     .page-header
-      form(action='/#{id}/delete' method='post')
-        input(type='submit' class='btn btn-danger btn-right' value='Delete')
+      if canEdit
+        form(action='/#{id}/delete' method='post')
+          input(type='submit' class='btn btn-danger btn-right' value='Delete')
 
       h1 #{name}
 
-    form(action='/#{id}/update' method='post' class='corral-form')
+    if canEdit
+      form(action='/#{id}/update' method='post' class='corral-form')
+        .corral
+          .corral-item
+            label(for='html') HTML
+            textarea(name='html' class='editor html-editor')
+              | !{html}
+
+          .corral-item
+            label(for='css') CSS
+            textarea(name='css' class='editor css-editor')
+              | !{css}
+
+          .corral-item
+            label(for='js') JS
+            textarea(name='js' class='editor js-editor')
+              | !{js}
+
+        .iframe-holder
+          iframe.detail(
+            id='corral-#{id}'
+            src='/#{id}/preview' 
+            name='preview_window'
+            class='corral-preview'
+            sandbox='allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-modals allow-forms' 
+            allowfullscreen='true'
+            allowtransparency='true'
+          )
+    else
       .corral
-        .corral-item
-          label(for='html') HTML
-          textarea(name='html' class='editor html-editor')
-            | !{html}
+          .corral-item
+            label(for='html') HTML
+            textarea(name='html' class='editor html-editor read-only')
+              | !{html}
 
-        .corral-item
-          label(for='css') CSS
-          textarea(name='css' class='editor css-editor')
-            | !{css}
+          .corral-item
+            label(for='css') CSS
+            textarea(name='css' class='editor css-editor read-only')
+              | !{css}
 
-        .corral-item
-          label(for='js') JS
-          textarea(name='js' class='editor js-editor')
-            | !{js}
+          .corral-item
+            label(for='js') JS
+            textarea(name='js' class='editor js-editor read-only')
+              | !{js}
 
-      .iframe-holder
-        iframe.detail(
-          id='corral-#{id}'
-          src='/#{id}/preview' 
-          name='preview_window'
-          class='corral-preview'
-          sandbox='allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-modals allow-forms' 
-          allowfullscreen='true'
-          allowtransparency='true'
-        )
+        .iframe-holder
+          iframe.detail(
+            id='corral-#{id}'
+            src='/#{id}/preview' 
+            name='preview_window'
+            class='corral-preview'
+            sandbox='allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-modals allow-forms' 
+            allowfullscreen='true'
+            allowtransparency='true'
+          )
