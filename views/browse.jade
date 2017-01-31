@@ -8,7 +8,8 @@ block content
     div.grid-container
       each corral in corrals
         div.grid-item 
-          .iframe-overlay
+          a(href=corral.href class='iframe-overlay')
+            div.grid-name #{corral.name}
           .iframe-holder
             iframe(
               src='/#{corral.id}/preview' 
@@ -20,4 +21,5 @@ block content
               scrolling='no'
               allowtransparency='false'
             )
-          a(href=corral.href class='grid-name') #{corral.name}
+          
+            

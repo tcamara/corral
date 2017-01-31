@@ -85,7 +85,12 @@ input, textarea {
 	padding: 3px;
 }
 
-a.grid-name, a.grid-name:active, a.grid-name:hover a.grid-name:visited {
+.new-name {
+	font-size: 36px;
+	width: 380px;
+}
+
+.grid-name, .grid-name:visited {
 	display: block;
 	position: absolute;
 	color: #dddddd;
@@ -94,5 +99,21 @@ a.grid-name, a.grid-name:active, a.grid-name:hover a.grid-name:visited {
 	width: 70%;
 	padding-top: 5px;
 	margin: 0 10px;
+	border-top: 2px solid #dddddd;
+}
+
+.iframe-overlay:hover {
+	background-color: black;
+	opacity: .8;
+}
+
+.iframe-overlay:hover .grid-name {
+	color: white;
 	border-top: 2px solid white;
+}
+
+.error {
+	text-align: center;
+	color: #dddddd;
+	margin: 50px 0;
 }

@@ -2,27 +2,33 @@ extends layout.jade
 
 block content
   .container
-    form(action='/create' method='post')
-      .page-header
+    .page-header
+      form(action='/create' method='post')
+        input(type='hidden' name='id' value='#{id}')
         input(type='submit' class='btn btn-primary btn-right' value='Save')
+        input(type='text' name='name' class='new-name' placeholder='Name Your New Corral')
 
-        h1 Create New Corral
-
-      label(for='name') Name
-      br
-      input(type='text' name='name')
-      br
-      br
-      
+    form(action='/#{id}/update' method='post' class='corral-form')
       .corral
         .corral-item
           label(for='html') HTML
-          textarea(name='html' class='editor html-editor')
+          textarea(name='html' class='editor html-editor' placeholder='Place your HTML code here')
 
         .corral-item
           label(for='css') CSS
-          textarea(name='css' class='editor css-editor')
-             
+          textarea(name='css' class='editor css-editor' placeholder='Place your CSS code here')
+
         .corral-item
           label(for='js') JS
-          textarea(name='js' class='editor js-editor')
+          textarea(name='js' class='editor js-editor' placeholder='Place your JS code here')
+
+      .iframe-holder
+        iframe.detail(
+          id='corral-#{id}'
+          src='/#{id}/preview' 
+          name='preview_window'
+          class='corral-preview'
+          sandbox='allow-scripts allow-pointer-lock allow-same-origin allow-popups allow-modals allow-forms' 
+          allowfullscreen='true'
+          allowtransparency='true'
+        )

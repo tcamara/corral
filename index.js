@@ -19,12 +19,15 @@ const io = socketIo(server);
 app.set('views', './views');
 app.set('view engine', 'jade');
 
+// Static Content
+app.use(express.static('public'));
+
 // parse application/json
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// View/Modify Existing Corral
+// View Existing Corrals
 app.get('/', (req, res, next) => {
-	mysql('SELECT * FROM `Content`', [], (results, fields) => {
+	mysql('SELECT * FROM `Content` WHERE `saved` = 1', [], (results, fields) => {
 		const corrals = [];
 		for(var i = 0; i < results.length; i++) {
 			corrals.push({
@@ -44,19 +47,29 @@ app.get('/', (req, res, next) => {
 
 // Start New Corral
 app.get('/new', (req, res, next) => {
-	res.render('new', {
-		codemirror: true,
+	const ip_address = req.ip;
+	const values = [ip_address, 0];
+
+	mysql('INSERT INTO `Content` (`ip_address`, `saved`) VALUES (?, ?)', values, (results, fields) => {
+		unsaved_rows_cleanup(results.insertId);
+
+		res.render('new', {
+			id: results.insertId,
+			codemirror: true,
+		});
+	}, (error) => {
+		return next(error);
 	});
 });
 
 // Create New Corral
 app.post('/create', (req, res, next) => {
-	const { name, html, css, js } = req.body;
+	const { id, name } = req.body;
 	const ip_address = req.ip;
-	const values = [ name, html, css, js];
+	const values = [name, id, ip_address];
 
-	mysql('INSERT INTO `Content` (`name`, `ip_address`, `html`, `css`, `js`) VALUES (?, ?, ?, ?, ?)', values, (results, fields) => {
-		res.redirect(`/${results.insertId}`);
+	mysql('UPDATE `Content` SET `name` = ?, `saved` = 1 WHERE `id` = ? AND ip_address = ?', values, (results, fields) => {
+		res.redirect(`/${id}`);
 	}, (error) => {
 		return next(error);
 	});
@@ -112,9 +125,9 @@ app.get('/:id/preview', (req, res, next) => {
 app.post('/:id/update', (req, res, next) => {
 	const id = req.params.id;
 	const { html, css, js } = req.body;
-	const values = [ html, css, js, id ];
+	const values = [ html, css, js, id, req.ip ];
 
-	mysql('UPDATE `Content` SET `html` = ?, `css` = ?, `js` = ? WHERE `id` = ?', values, (results, fields) => {
+	mysql('UPDATE `Content` SET `html` = ?, `css` = ?, `js` = ? WHERE `id` = ? AND ip_address = ?', values, (results, fields) => {
 		res.status(200).send({ success: true });
 		io.emit('corral update', 'test');
 	}, (error) => {
@@ -135,18 +148,28 @@ app.post('/:id/delete', (req, res, next) => {
 	}
 });
 
-// Static Content
-app.use(express.static('public'));
-
 // 404 handler
 app.use(function(req, res, next) {
- 	console.log('404');
- 	res.status(404).send('404');
+	console.log(req.originalUrl);
+ 	res.status(404).render('error_404');
 });
 
 // Generic error handler
 app.use(function(err, req, res, next) {
-	console.log('generic error');
 	console.log(err);
-	res.status(500).send(err.message);
+	res.status(500).render('error', {
+		error: err.message,
+	})
 });
+
+function unsaved_rows_cleanup(insertId) {
+	// Run a cleanup delete every 20 insertions
+	if(insertId % 20 == 1) {
+		mysql('DELETE FROM `Content` WHERE `saved` = 0 AND `last_update` < NOW() - INTERVAL 7 DAY', (results, fields) => {
+			// Do nothing
+		}, (error) => {
+			// Do nothing
+		});
+	}
+}
+
