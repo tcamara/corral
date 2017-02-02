@@ -45,7 +45,7 @@ editors.forEach((item) => {
 	const $domItem = $(item.selector).first();
 
 	// Check if this editor should be read only
-	const readOnly = $domItem.hasClass('read-only');
+	const readOnly = $domItem.hasClass('read-only') ? 'nocursor' : false;
 
 	// Create this editor
 	let codemirror = CodeMirror.fromTextArea($domItem[0], {

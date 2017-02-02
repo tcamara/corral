@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('./mysql.js');
 const socketIo = require('socket.io');
+const requestIp = require('request-ip');
 
 // Init ExpressJS
 const app = express();
@@ -47,8 +48,9 @@ app.get('/', (req, res, next) => {
 
 // Start New Corral
 app.get('/new', (req, res, next) => {
-	const ip_address = req.ip;
+	const ip_address = requestIp.getClientIp(req);
 	const values = [ip_address, 0];
+	console.log(ip_address);
 
 	mysql('INSERT INTO `Content` (`ip_address`, `saved`) VALUES (?, ?)', values, (results, fields) => {
 		unsaved_rows_cleanup(results.insertId);
@@ -65,7 +67,7 @@ app.get('/new', (req, res, next) => {
 // Create New Corral
 app.post('/create', (req, res, next) => {
 	const { id, name } = req.body;
-	const ip_address = req.ip;
+	const ip_address = requestIp.getClientIp(req);
 	const values = [name, id, ip_address];
 
 	mysql('UPDATE `Content` SET `name` = ?, `saved` = 1 WHERE `id` = ? AND ip_address = ?', values, (results, fields) => {
@@ -81,7 +83,7 @@ app.get('/:id', (req, res, next) => {
 
 	mysql('SELECT * FROM `Content` WHERE `id` = ?', [ id ], (results, fields) => {
 		if(results.length) {
-			const canEdit = results[0].ip_address == req.ip ? true : false;
+			const canEdit = results[0].ip_address == requestIp.getClientIp(req) ? true : false;
 
 			res.render('corral', { 
 				id: id,
@@ -125,7 +127,7 @@ app.get('/:id/preview', (req, res, next) => {
 app.post('/:id/update', (req, res, next) => {
 	const id = req.params.id;
 	const { html, css, js } = req.body;
-	const values = [ html, css, js, id, req.ip ];
+	const values = [ html, css, js, id, requestIp.getClientIp(req) ];
 
 	mysql('UPDATE `Content` SET `html` = ?, `css` = ?, `js` = ? WHERE `id` = ? AND ip_address = ?', values, (results, fields) => {
 		res.status(200).send({ success: true });
@@ -140,7 +142,7 @@ app.post('/:id/delete', (req, res, next) => {
 	const id = req.params.id;
 
 	if(canDelete) {
-		mysql('DELETE FROM `Content` WHERE `id` = ? AND ip_address = ?', [ id, req.ip ], (results, fields) => {
+		mysql('DELETE FROM `Content` WHERE `id` = ? AND ip_address = ?', [ id, requestIp.getClientIp(req) ], (results, fields) => {
 			res.redirect('/');
 		}, (error) => {
 			return next(error);

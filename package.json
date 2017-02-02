@@ -20,6 +20,7 @@
     "express": "^4.13.3",
     "jade": "^1.11.0",
     "mysql": "^2.10.1",
+    "request-ip": "^1.2.3",
     "socket.io": "^1.4.6"
   },
   "devDependencies": {
